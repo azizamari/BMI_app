@@ -1,0 +1,4 @@
+#Mon Jun 15 14:16:42 WAT 2020
+base.0=D\:\\aziz\\flutterprojects\\BMI_app\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:bmi_calculator/CalculatorBrain.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -13,7 +14,20 @@ class _InputPageState extends State<InputPage> {
   Color maleCard = Color(0x55ffffff);
   Color maleTC = Colors.white;
   int pickedGender = -1;
+  static int height = 170;
+  static int age = 18;
+  static int weight = 65;
 
+  void Reset(){
+    femaleCard = Color(0x55ffffff);
+    femaleTC = Colors.white;
+    maleCard = Color(0x55ffffff);
+    maleTC = Colors.white;
+    pickedGender = 1;
+    height = 170;
+    age = 18;
+    weight = 65;
+  }
   void updateColor(int gender) {
     //male
     if (gender == 1) {
@@ -41,6 +55,24 @@ class _InputPageState extends State<InputPage> {
         pickedGender = 1;
       }
     }
+  }
+  createAlertDialog({BuildContext context,String interpretation,String bmi,String result}){
+    return showDialog(context: context,builder: (context){
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text(bmi,style:TextStyle(fontSize: 30, color: Color(0xffEA8549),fontWeight: FontWeight.bold) ,),
+        content: Text(result+'\n'+interpretation,style:TextStyle(fontSize: 20, color: Color(0xffEA8549)) ,),
+        actions: <Widget>[
+          MaterialButton(
+            elevation: 5,
+            child: Text("Ok",style:TextStyle(fontSize: 30, color: Color(0xffEA8549),fontWeight: FontWeight.bold) ,),
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    });
   }
 
   @override
@@ -94,23 +126,124 @@ class _InputPageState extends State<InputPage> {
                     ),
                   ],
                 ),
-                Text('Weight',
-                    style: TextStyle(fontSize: 22, color: Colors.white)),
-                TextField(
-                  style: TextStyle(fontSize: 22, color: Colors.white),
-                  keyboardType: TextInputType.number,
-                ),
                 Text('Height',
                     style: TextStyle(fontSize: 22, color: Colors.white)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 280,
+                      child: Slider(
+                        min: 150,
+                        max: 220,
+                        value: height.toDouble(),
+                        activeColor: Colors.white,
+                        inactiveColor: Color(0x55ffffff),
+                        onChanged: (double newValue) {
+                          setState(() {
+                            height = newValue.round();
+                          });
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 90,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Color(0x55ffffff)),
+                      child: Center(
+                        child: Text(
+                          height.toString() + " Cm",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Text('Weight',
+                    style: TextStyle(fontSize: 22, color: Colors.white)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 280,
+                      child: Slider(
+                        min: 35,
+                        max: 200,
+                        value: weight.toDouble(),
+                        activeColor: Colors.white,
+                        inactiveColor: Color(0x55ffffff),
+                        onChanged: (double newValue) {
+                          setState(() {
+                            weight = newValue.round();
+                          });
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 90,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Color(0x55ffffff)),
+                      child: Center(
+                        child: Text(
+                          weight.toString() + " Kg",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Text('Age',
                     style: TextStyle(fontSize: 22, color: Colors.white)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 280,
+                      child: Slider(
+                        min: 0,
+                        max: 100,
+                        value: age.toDouble(),
+                        activeColor: Colors.white,
+                        inactiveColor: Color(0x55ffffff),
+                        onChanged: (double newValue) {
+                          setState(() {
+                            age = newValue.round();
+                          });
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 90,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Color(0x55ffffff)),
+                      child: Center(
+                        child: Text(
+                          age.toString() + " Yo",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 RoundButton(
                   buttonColor: Colors.white,
                   textIconColor: Color(0xffEA8549),
                   text: 'Calculate',
                   icon: Icon(FontAwesomeIcons.calculator),
-                  pressed: () {},
-                )
+                  pressed: () {
+                    var calc= CalculatorBrain(weight:weight,height: height);
+                    createAlertDialog(context: context,bmi: calc.calculateBmi(),interpretation: calc.getInterpretation(),result: calc.getResult());
+                    setState(() {
+                      Reset();
+                    });
+                  },
+                ),
               ],
             ),
           ),
